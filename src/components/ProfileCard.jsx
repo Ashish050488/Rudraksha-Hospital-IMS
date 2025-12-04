@@ -122,7 +122,7 @@ const ProfileCard = ({ user }) => {
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-secondary relative">
         {/* 1. Header Banner */}
         <div className="h-32 bg-primary relative">
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-accent to-transparent"></div>
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,var(--tw-gradient-stops))]from-accent to-transparent"></div>
         </div>
 
         <div className="px-8 pb-8 relative">

@@ -6,7 +6,8 @@ import {
   CalendarCheck, 
   LogOut, 
   Activity,
-  UserPlus 
+  UserPlus,
+  Users 
 } from 'lucide-react';
 
 const Layout = () => {
@@ -42,6 +43,8 @@ const Layout = () => {
 
   if (isAdmin) {
     navItems.push({ name: 'Add Employee', path: '/add-employee', icon: <UserPlus size={20} /> });
+    // NEW LINK
+    navItems.push({ name: 'Staff Attendance', path: '/admin-attendance', icon: <Users size={20} /> });
   }
 
   return (

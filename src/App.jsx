@@ -2,8 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
-import AddEmployee from './pages/AddEmployee'; // <--- Import
+import AddEmployee from './pages/AddEmployee';
+import Attendance from './pages/Attendance'; 
 import Layout from './components/Layout';
+import AdminAttendance from './pages/AdminAttendance';
 
 const PrivateRoute = ({ children }) => {
   const userInfo = localStorage.getItem('userInfo');
@@ -17,12 +19,7 @@ const Dashboard = () => (
   </div>
 );
 
-const Attendance = () => (
-  <div className="bg-white p-6 rounded-xl shadow-md">
-    <h3 className="text-lg font-bold text-gray-800">Attendance Module</h3>
-    <p className="text-gray-600 mt-2">Clock-in functionality coming next.</p>
-  </div>
-);
+// Deleted the inline Attendance component
 
 function App() {
   return (
@@ -34,8 +31,9 @@ function App() {
         <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/attendance" element={<Attendance />} />
-          <Route path="/add-employee" element={<AddEmployee />} /> {/* <--- New Route */}
+          <Route path="/admin-attendance" element={<AdminAttendance />} />
+          <Route path="/attendance" element={<Attendance />} /> 
+          <Route path="/add-employee" element={<AddEmployee />} />
         </Route>
       </Routes>
     </Router>
