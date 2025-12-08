@@ -7,6 +7,8 @@ import Attendance from './pages/Attendance';
 import Layout from './components/Layout';
 import AdminAttendance from './pages/AdminAttendance';
 import Pharmacy from './pages/Pharmacy';
+import DoctorRequests from './pages/DoctorRequests';
+import NurseDashboard from './pages/NurseDashboard';
 
 const PrivateRoute = ({ children }) => {
   const userInfo = localStorage.getItem('userInfo');
@@ -36,6 +38,8 @@ function App() {
           <Route path="/attendance" element={<Attendance />} /> 
           <Route path="/add-employee" element={<AddEmployee />} />
           <Route path="/pharmacy" element={<Pharmacy />} />
+          <Route path="/doctor-requests" element={<DoctorRequests />} />
+          <Route path="/nurse-tasks" element={<NurseDashboard />} />
         </Route>
       </Routes>
     </Router>

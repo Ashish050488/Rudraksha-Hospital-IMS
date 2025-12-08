@@ -9,14 +9,16 @@ import {
   UserPlus,
   Users,
   BarChart3,
-  Pill // <--- Import Pill Icon
+  Pill,
+  Stethoscope,
+  ClipboardList
 } from 'lucide-react';
 
 const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Robust parsing
+  // Robust parsing of user info from localStorage
   let userInfo = {};
   try {
     const stored = localStorage.getItem('userInfo');
@@ -27,12 +29,15 @@ const Layout = () => {
     console.error("Error parsing user info:", error);
   }
   
+  // Ensure userInfo is a valid object
   userInfo = userInfo && typeof userInfo === 'object' ? userInfo : {};
   
   // Access Control Logic
-  const isAdmin = userInfo.role === 'admin';
-  const isPharmacist = userInfo.role === 'pharmacist';
-  const hasPharmacyAccess = isAdmin || isPharmacist;
+  const role = userInfo.role || 'guest';
+  const isAdmin = role === 'admin';
+  const isPharmacist = role === 'pharmacist' || isAdmin;
+  const isDoctor = role === 'doctor' || isAdmin;
+  const isNurse = role === 'nurse' || isAdmin;
 
   const handleLogout = () => {
     localStorage.removeItem('userInfo');
@@ -45,8 +50,16 @@ const Layout = () => {
     { name: 'Attendance', path: '/attendance', icon: <CalendarCheck size={20} /> },
   ];
 
-  if (hasPharmacyAccess) {
+  if (isPharmacist) {
     navItems.push({ name: 'Pharmacy', path: '/pharmacy', icon: <Pill size={20} /> });
+  }
+
+  if (isDoctor) {
+    navItems.push({ name: 'Request Assistance', path: '/doctor-requests', icon: <Stethoscope size={20} /> });
+  }
+
+  if (isNurse) {
+    navItems.push({ name: 'Nurse Station', path: '/nurse-tasks', icon: <ClipboardList size={20} /> });
   }
 
   if (isAdmin) {
@@ -57,6 +70,7 @@ const Layout = () => {
 
   return (
     <div className="flex h-screen bg-background text-gray-900">
+      {/* SIDEBAR */}
       <aside className="w-64 bg-primary text-white flex flex-col shadow-2xl z-10">
         <div className="p-6 border-b border-white/10 flex items-center space-x-3">
           <div className="bg-white/10 p-2 rounded-lg backdrop-blur-sm">
@@ -78,7 +92,7 @@ const Layout = () => {
           </p>
         </div>
 
-        <nav className="flex-1 py-6 px-3 space-y-2">
+        <nav className="flex-1 py-6 px-3 space-y-2 overflow-y-auto">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
@@ -108,6 +122,7 @@ const Layout = () => {
         </div>
       </aside>
 
+      {/* MAIN CONTENT AREA */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative">
         <header className="bg-white border-b border-gray-200 h-16 flex items-center px-8 justify-between shrink-0">
           <h2 className="text-xl font-bold text-primary capitalize tracking-tight">
