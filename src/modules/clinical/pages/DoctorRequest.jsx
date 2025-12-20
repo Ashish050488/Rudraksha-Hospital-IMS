@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { io } from 'socket.io-client'; // Import Socket.io
+import { io } from 'socket.io-client'; 
 import { 
   Stethoscope, AlertCircle, Clock, CheckCircle, 
   MapPin, Activity, Plus, User, XCircle, ShieldAlert, RefreshCw
 } from 'lucide-react';
+import { API_BASE_URL, SOCKET_URL } from '../../../config/api';
 
-const DoctorRequests = () => {
+const DoctorRequest = () => {
   const [myRequests, setMyRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isClockedIn, setIsClockedIn] = useState(false);
@@ -20,7 +21,7 @@ const DoctorRequests = () => {
     fetchRequests();
 
     // SETUP SOCKET LISTENER
-    const socket = io('http://localhost:5000');
+    const socket = io(SOCKET_URL);
     
     // Listen for updates to MY requests
     socket.on('request_accepted', (updatedReq) => {
@@ -37,7 +38,7 @@ const DoctorRequests = () => {
   const checkAttendanceStatus = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const response = await fetch('http://localhost:5000/api/attendance/status', {
+      const response = await fetch(`${API_BASE_URL}/api/attendance/status`, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       const data = await response.json();
@@ -51,7 +52,7 @@ const DoctorRequests = () => {
   const fetchRequests = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const response = await fetch('http://localhost:5000/api/requests/my', {
+      const response = await fetch(`${API_BASE_URL}/api/requests/my`, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       const data = await response.json();
@@ -72,7 +73,7 @@ const DoctorRequests = () => {
 
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const response = await fetch('http://localhost:5000/api/requests', {
+      const response = await fetch(`${API_BASE_URL}/api/requests`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${userInfo.token}` },
         body: JSON.stringify(formData)
@@ -94,7 +95,7 @@ const DoctorRequests = () => {
     if (!window.confirm("Cancel this request? Nurses will no longer see it.")) return;
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const response = await fetch(`http://localhost:5000/api/requests/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/requests/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
@@ -219,4 +220,4 @@ const DoctorRequests = () => {
   );
 };
 
-export default DoctorRequests;
+export default DoctorRequest;

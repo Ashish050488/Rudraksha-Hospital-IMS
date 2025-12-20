@@ -3,6 +3,7 @@ import {
   User, CreditCard, Building2, Clock, CalendarDays, MapPin, 
   Camera, Loader2, CheckCircle, AlertCircle, X
 } from 'lucide-react';
+import { API_BASE_URL } from '../../../config/api';
 
 const ProfileCard = ({ user }) => {
   const fileInputRef = useRef(null);
@@ -66,7 +67,7 @@ const ProfileCard = ({ user }) => {
            return;
         }
 
-        const response = await fetch('http://localhost:5000/api/users/profile/photo', {
+        const response = await fetch(`${API_BASE_URL}/api/users/profile/photo`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

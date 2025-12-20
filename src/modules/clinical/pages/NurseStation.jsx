@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client'; 
 import { 
-  ClipboardList, CheckCircle, AlertOctagon, 
-  MapPin, Clock, User, ArrowRight, Trophy 
+  ClipboardList, CheckCircle, 
+  MapPin, User, ArrowRight, Trophy 
 } from 'lucide-react';
+import { API_BASE_URL, SOCKET_URL } from '../../../config/api';
 
-const NurseDashboard = () => {
+const NurseStation = () => {
   const [activeTab, setActiveTab] = useState('pool'); 
   const [pool, setPool] = useState([]);
   const [myTasks, setMyTasks] = useState([]);
@@ -27,7 +28,7 @@ const NurseDashboard = () => {
 
   // 2. Setup Real-Time Listener
   useEffect(() => {
-    const newSocket = io('http://localhost:5000'); 
+    const newSocket = io(SOCKET_URL); 
     setSocket(newSocket);
 
     // LISTEN: New Request Created
@@ -61,8 +62,8 @@ const NurseDashboard = () => {
     try {
       // CRITICAL FIX: Always fetch BOTH endpoints so stats are accurate immediately
       const [poolRes, myRes] = await Promise.all([
-        fetch('http://localhost:5000/api/requests/pool', { headers }),
-        fetch('http://localhost:5000/api/requests/my', { headers })
+        fetch(`${API_BASE_URL}/api/requests/pool`, { headers }),
+        fetch(`${API_BASE_URL}/api/requests/my`, { headers })
       ]);
 
       if (poolRes.ok) setPool(await poolRes.json());
@@ -76,7 +77,7 @@ const NurseDashboard = () => {
   const handleAccept = async (id) => {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
     try {
-      const res = await fetch(`http://localhost:5000/api/requests/${id}/accept`, {
+      const res = await fetch(`${API_BASE_URL}/api/requests/${id}/accept`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
@@ -95,7 +96,7 @@ const NurseDashboard = () => {
   const handleComplete = async (id) => {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
     try {
-      const res = await fetch(`http://localhost:5000/api/requests/${id}/complete`, {
+      const res = await fetch(`${API_BASE_URL}/api/requests/${id}/complete`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
@@ -234,4 +235,4 @@ const NurseDashboard = () => {
   );
 };
 
-export default NurseDashboard;
+export default NurseStation;

@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Users, 
-  Clock, 
-  CheckCircle, 
-  AlertCircle, 
-  UserCheck, 
-  UserX,
-  History,
+  Users, Clock, CheckCircle, AlertCircle, 
   MapPin 
 } from 'lucide-react';
+import { API_BASE_URL } from '../../../config/api';
 
 // Sub-component for individual rows to handle local state (Address Expansion)
 const EmployeeRow = ({ emp, stats, onManualAction }) => {
@@ -94,7 +89,7 @@ const EmployeeRow = ({ emp, stats, onManualAction }) => {
   );
 };
 
-const AdminAttendance = () => {
+const AttendanceAdmin = () => {
   const [employees, setEmployees] = useState([]);
   const [todaysLogs, setTodaysLogs] = useState([]); 
   const [loading, setLoading] = useState(true);
@@ -116,13 +111,13 @@ const AdminAttendance = () => {
       const token = userInfo?.token;
 
       // 1. Get All Employees
-      const empRes = await fetch('http://localhost:5000/api/users', {
+      const empRes = await fetch(`${API_BASE_URL}/api/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const empData = await empRes.json();
 
       // 2. Get Today's Logs
-      const attRes = await fetch('http://localhost:5000/api/attendance/all', {
+      const attRes = await fetch(`${API_BASE_URL}/api/attendance/all`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const attData = await attRes.json();
@@ -146,7 +141,7 @@ const AdminAttendance = () => {
     const endpoint = action === 'in' ? 'manual-in' : 'manual-out';
     
     try {
-      const response = await fetch(`http://localhost:5000/api/attendance/${endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}/api/attendance/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -268,4 +263,4 @@ const AdminAttendance = () => {
   );
 };
 
-export default AdminAttendance;
+export default AttendanceAdmin;

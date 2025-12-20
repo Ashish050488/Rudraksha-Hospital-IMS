@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Pill, Plus, Search, PackagePlus, MinusCircle, History, 
-  Syringe, Stethoscope, AlertOctagon, FileText, 
-  MapPin, Tag, Boxes, DollarSign, ClipboardList, X
+  Pill, Plus, Search, 
+  PackagePlus, MinusCircle, 
+  Syringe, AlertOctagon,
+  FileText, MapPin, Tag, Boxes, DollarSign,
+  ClipboardList, X
 } from 'lucide-react';
+import { API_BASE_URL } from '../../../config/api';
 
-const Pharmacy = () => {
+const PharmacyDashboard = () => {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('inventory');
@@ -42,7 +45,7 @@ const Pharmacy = () => {
   const fetchInventory = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
-      const response = await fetch('http://localhost:5000/api/pharmacy', {
+      const response = await fetch(`${API_BASE_URL}/api/pharmacy`, {
         headers: { Authorization: `Bearer ${userInfo.token || ''}` }
       });
       const data = await response.json();
@@ -59,7 +62,7 @@ const Pharmacy = () => {
     e.preventDefault();
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
-      const response = await fetch('http://localhost:5000/api/pharmacy/add-medicine', {
+      const response = await fetch(`${API_BASE_URL}/api/pharmacy/add-medicine`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${userInfo.token || ''}` },
         body: JSON.stringify(newItem)
@@ -92,7 +95,7 @@ const Pharmacy = () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
       const payload = { ...newBatch, medicineId: showBatchModal?._id };
-      const response = await fetch('http://localhost:5000/api/pharmacy/add-batch', {
+      const response = await fetch(`${API_BASE_URL}/api/pharmacy/add-batch`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${userInfo.token || ''}` },
         body: JSON.stringify(payload)
@@ -116,7 +119,7 @@ const Pharmacy = () => {
     e.preventDefault();
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
-      const response = await fetch('http://localhost:5000/api/pharmacy/dispense', {
+      const response = await fetch(`${API_BASE_URL}/api/pharmacy/dispense`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${userInfo.token || ''}` },
         body: JSON.stringify({ medicineId: showDispenseModal?._id, quantity: dispenseQty })
@@ -144,8 +147,6 @@ const Pharmacy = () => {
 
   if (loading) return <div className="p-12 text-center text-gray-500 font-medium text-lg">Loading Pharmacy Database...</div>;
 
-  // --- REUSABLE UI COMPONENTS ---
-  // Improved Field component with better spacing
   const Field = ({ label, children, required = false }) => (
     <div className="flex flex-col">
       <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wide">
@@ -155,7 +156,6 @@ const Pharmacy = () => {
     </div>
   );
 
-  // Common input styling: Light gray background + visible border
   const inputClass = "w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 font-medium focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-200 placeholder-gray-400 shadow-sm";
 
   return (
@@ -254,18 +254,29 @@ const Pharmacy = () => {
                     </td>
 
                     <td className="p-5 text-center align-top">
-                      <div className={`text-xl font-bold font-mono ${med.totalQuantity <= med.minStock ? 'text-red-600' : 'text-green-700'}`}>{med.totalQuantity ?? 0}</div>
+                      <div className={`text-xl font-bold font-mono ${med.totalQuantity <= med.minStock ? 'text-red-600' : 'text-green-600'}`}>{med.totalQuantity ?? 0}</div>
                       <div className="text-xs font-bold text-gray-400 uppercase tracking-wide">Units</div>
                     </td>
 
                     <td className="p-5 text-right align-top space-x-2">
-                      <button onClick={()=>{ setShowBatchModal(med); setNewBatch(prev=>({ ...prev, quantity:0 })); }} className="px-3 py-2 rounded-lg border border-primary text-primary text-xs font-bold hover:bg-primary hover:text-white transition shadow-sm inline-flex items-center">
+                      <button 
+                        onClick={() => setShowBatchModal(med)}
+                        className="bg-white border border-primary text-primary hover:bg-primary hover:text-white px-3 py-2 rounded-lg text-xs font-bold transition shadow-sm inline-flex items-center"
+                      >
                         <PackagePlus className="w-3.5 h-3.5 mr-1.5"/> Stock
                       </button>
-                      <button onClick={()=>{ setShowDispenseModal(med); setDispenseQty(1); }} className="px-3 py-2 rounded-lg border border-red-500 text-red-600 text-xs font-bold hover:bg-red-600 hover:text-white transition shadow-sm inline-flex items-center">
+                      <button 
+                        onClick={() => setShowDispenseModal(med)}
+                        className="bg-white border border-red-500 text-red-600 hover:bg-red-600 hover:text-white px-3 py-2 rounded-lg text-xs font-bold transition shadow-sm inline-flex items-center"
+                      >
                         <MinusCircle className="w-3.5 h-3.5 mr-1.5"/> Dispense
                       </button>
-                      <button onClick={()=>setShowPreviewItem(med)} className="px-3 py-2 rounded-lg bg-gray-100 text-gray-600 text-xs font-bold hover:bg-gray-200 transition">View</button>
+                      <button 
+                        onClick={() => setShowPreviewItem(med)}
+                        className="bg-gray-50 text-gray-600 hover:bg-gray-200 px-3 py-2 rounded-lg text-xs font-bold transition inline-flex items-center"
+                      >
+                        View
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -585,4 +596,4 @@ const Pharmacy = () => {
   );
 };
 
-export default Pharmacy;
+export default PharmacyDashboard;
